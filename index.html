@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>AI Plant Scanner</title>
 
 <style>
+
 body{
     font-family:Arial,sans-serif;
     background:#e8f5e9;
@@ -23,6 +25,10 @@ body{
     box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
 
+h1{
+    color:green;
+}
+
 button{
     background:green;
     color:white;
@@ -30,26 +36,27 @@ button{
     padding:12px 20px;
     border-radius:8px;
     cursor:pointer;
+    font-size:16px;
 }
 
 img{
     max-width:100%;
-    margin-top:15px;
+    margin-top:20px;
     border-radius:10px;
 }
 
 #result{
     margin-top:20px;
-    text-align:left;
-    white-space:pre-wrap;
-    word-wrap:break-word;
     background:#f5f5f5;
-    padding:10px;
+    padding:15px;
     border-radius:10px;
+    text-align:left;
 }
+
 </style>
 
 </head>
+
 <body>
 
 <div class="container">
@@ -73,14 +80,14 @@ Scan Leaf
 <img id="preview">
 
 <div id="result">
-Waiting...
+
+Waiting for image...
+
 </div>
 
 </div>
 
 <script>
-
-const API_KEY = "2b10nkbz8latbwRlOULHyhvRO";
 
 async function scanPlant() {
 
@@ -91,56 +98,108 @@ async function scanPlant() {
         fileInput.files[0];
 
     if (!file) {
-        alert("Please select a leaf image.");
+
+        alert(
+            "Please select a leaf image first."
+        );
+
         return;
     }
 
     document.getElementById("preview").src =
         URL.createObjectURL(file);
 
-    const formData = new FormData();
+    const formData =
+        new FormData();
 
-    formData.append("image", file);
+    formData.append(
+        "image",
+        file
+    );
 
     try {
 
-        const response = await fetch(
-            "http://192.168.0.187:5001/identify",
-            {
-                method: "POST",
-                body: formData
-            }
-        );
+        const response =
+            await fetch(
+                "http://192.168.0.187:5001/identify",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
 
-        const responseText =
-            await response.text();
+        const data =
+            await response.json();
 
-        console.log("STATUS:", response.status);
-        console.log("RESPONSE:", responseText);
+        console.log(data);
 
-        document.getElementById("result").innerHTML =
-`
-<b>Status:</b> ${response.status}
+        if (
+            data.results &&
+            data.results.length > 0
+        ) {
 
-<b>Response:</b>
+            const plant =
+                data.results[0];
 
-${responseText}
-`;
+            const plantName =
+                plant.species
+                .scientificNameWithoutAuthor;
+
+            const confidence =
+                (plant.score * 100)
+                .toFixed(2);
+
+            document.getElementById(
+                "result"
+            ).innerHTML =
+
+            `
+            <h2>✅ Plant Identified</h2>
+
+            <p>
+            <b>Plant Name:</b>
+            ${plantName}
+            </p>
+
+            <p>
+            <b>Confidence:</b>
+            ${confidence}%
+            </p>
+            `;
+
+        }
+        else {
+
+            document.getElementById(
+                "result"
+            ).innerHTML =
+
+            `
+            <h2>❌ Not Identified</h2>
+
+            <p>
+            Plant could not be identified.
+            </p>
+            `;
+        }
 
     }
-    catch(error){
+    catch(error) {
 
         console.error(error);
 
-        document.getElementById("result").innerHTML =
-`
-ERROR:
+        document.getElementById(
+            "result"
+        ).innerHTML =
 
-${error}
-`;
+        `
+        <h2>❌ Error</h2>
 
+        <p>
+        ${error}
+        </p>
+        `;
     }
-
 }
 
 </script>
