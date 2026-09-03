@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Plant Scanner</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    text-align:center;
+    background:#e8f5e9;
+    padding:20px;
+}
+
+.container{
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+h1{
+    color:green;
+}
+
+button{
+    background:green;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:darkgreen;
+}
+
+img{
+    max-width:100%;
+    margin-top:15px;
+    border-radius:10px;
+}
+
+#result{
+    margin-top:20px;
+    text-align:left;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>🌱 AI Plant Scanner</h1>
+
+<input
+type="file"
+id="imageInput"
+accept="image/*"
+capture="environment">
+
+<br><br>
+
+<button onclick="scanPlant()">
+Scan Leaf
+</button>
+
+<br>
+
+<img id="preview">
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+const API_KEY = "YOUR_API_KEY_HERE";
+
+function scanPlant(){
+
+    const fileInput =
+        document.getElementById("imageInput");
+
+    const file =
+        fileInput.files[0];
+
+    if(!file){
+        alert("Please take a leaf photo first");
+        return;
+    }
+
+    const preview =
+        document.getElementById("preview");
+
+    preview.src =
+        URL.createObjectURL(file);
+
+    const formData =
+        new FormData();
+
+    formData.append("images", file);
+
+    fetch(
+        `https://my-api.plantnet.org/v2/identify/all?api-key=${API_KEY}`,
+        {
+            method:"POST",
+            body:formData
+        }
+    )
+    .then(response => response.json())
+    .then(data => {
+
+        console.log(data);
+
+        if(
+            data.results &&
+            data.results.length > 0
+        ){
+
+            const plant =
+                data.results[0];
+
+            const name =
+            plant.species
+            .scientificNameWithoutAuthor;
+
+            const confidence =
+            (plant.score * 100)
+            .toFixed(2);
+
+            document.getElementById(
+                "result"
+            ).innerHTML = `
+
+            <h2>Result</h2>
+
+            <p>
+            <b>Plant Name:</b>
+            ${name}
+            </p>
+
+            <p>
+            <b>Confidence:</b>
+            ${confidence}%
+            </p>
+
+            <p>
+            <b>Status:</b>
+            Plant identified successfully.
+            </p>
+            `;
+
+        }else{
+
+            document.getElementById(
+                "result"
+            ).innerHTML =
+
+            "<h3>Plant could not be identified.</h3>";
+        }
+
+    })
+    .catch(error => {
+
+        console.error(error);
+
+        alert(
+            "API Error. Check your API key."
+        );
+    });
+
+}
+
+</script>
+
+</body>
+</html>
