@@ -141,9 +141,17 @@ async function scanPlant() {
             const plant =
                 data.results[0];
 
-            const plantName =
-                plant.species
-                .scientificNameWithoutAuthor;
+            let plantName =
+            plant.species
+            .scientificNameWithoutAuthor;
+
+        if (
+        plant.species.commonNames &&
+        plant.species.commonNames.length > 0
+        ) {
+            plantName =
+        plant.species.commonNames[0];
+        }
 
             const confidence =
                 (plant.score * 100)
