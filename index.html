@@ -2,7 +2,6 @@
 <html>
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -19,7 +18,7 @@ body{
 
 .container{
     background:white;
-    max-width:600px;
+    max-width:700px;
     margin:auto;
     padding:20px;
     border-radius:15px;
@@ -47,7 +46,7 @@ button:hover{
 img{
     max-width:100%;
     margin-top:20px;
-    border-radius:10px;
+    border-radius:15px;
 }
 
 #result{
@@ -56,11 +55,9 @@ img{
     padding:15px;
     border-radius:10px;
     text-align:left;
-    font-size:16px;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -157,7 +154,6 @@ async function scanPlant() {
                 plant.species.commonNames &&
                 plant.species.commonNames.length > 0
             ) {
-
                 commonName =
                     plant.species.commonNames[0];
             }
@@ -165,6 +161,18 @@ async function scanPlant() {
             const confidence =
                 (plant.score * 100)
                 .toFixed(2);
+
+            const health =
+                data.health.health;
+
+            const disease =
+                data.health.disease;
+
+            const healthConfidence =
+                data.health.confidence;
+
+            const suggestion =
+                data.health.suggestion;
 
             document.getElementById(
                 "result"
@@ -186,13 +194,32 @@ async function scanPlant() {
             </p>
 
             <p>
-            🎯 <b>Confidence:</b>
+            🎯 <b>Plant Confidence:</b>
             ${confidence}%
             </p>
 
+            <hr>
+
+            <h3>🍃 Health Analysis</h3>
+
             <p>
-            🍃 <b>Plant Health:</b>
-            Health analysis not available
+            ✅ <b>Health Status:</b>
+            ${health}
+            </p>
+
+            <p>
+            🦠 <b>Disease:</b>
+            ${disease}
+            </p>
+
+            <p>
+            📊 <b>Health Confidence:</b>
+            ${healthConfidence}%
+            </p>
+
+            <p>
+            💊 <b>Suggestion:</b>
+            ${suggestion}
             </p>
             `;
 
@@ -233,11 +260,9 @@ async function scanPlant() {
         </p>
         `;
     }
-
 }
 
 </script>
 
 </body>
-
 </html>
