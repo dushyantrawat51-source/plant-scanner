@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
@@ -22,7 +23,7 @@ body{
     margin:auto;
     padding:20px;
     border-radius:15px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
+    box-shadow:0px 0px 15px rgba(0,0,0,0.2);
 }
 
 h1{
@@ -39,6 +40,10 @@ button{
     font-size:16px;
 }
 
+button:hover{
+    background:darkgreen;
+}
+
 img{
     max-width:100%;
     margin-top:20px;
@@ -51,6 +56,7 @@ img{
     padding:15px;
     border-radius:10px;
     text-align:left;
+    font-size:16px;
 }
 
 </style>
@@ -72,7 +78,7 @@ capture="environment">
 <br><br>
 
 <button onclick="scanPlant()">
-Scan Leaf
+📷 Scan Leaf
 </button>
 
 <br><br>
@@ -140,20 +146,21 @@ async function scanPlant() {
 
             const plant =
                 data.results[0];
+
             const scientificName =
-            plant.species.scientificNameWithoutAuthor;
+                plant.species.scientificNameWithoutAuthor;
 
-            let plantName =
-            plant.species
-            .scientificNameWithoutAuthor;
+            let commonName =
+                "Not Available";
 
-        if (
-        plant.species.commonNames &&
-        plant.species.commonNames.length > 0
-        ) {
-            plantName =
-        plant.species.commonNames[0];
-        }
+            if (
+                plant.species.commonNames &&
+                plant.species.commonNames.length > 0
+            ) {
+
+                commonName =
+                    plant.species.commonNames[0];
+            }
 
             const confidence =
                 (plant.score * 100)
@@ -164,16 +171,28 @@ async function scanPlant() {
             ).innerHTML =
 
             `
-            <h2>✅ Plant Identified</h2>
+            <h2 style="color:green;">
+            ✅ Plant Identified
+            </h2>
 
             <p>
-            <b>Plant Name:</b>
-            ${plantName}
+            🌱 <b>Common Name:</b>
+            ${commonName}
             </p>
 
             <p>
-            <b>Confidence:</b>
+            🔬 <b>Scientific Name:</b>
+            ${scientificName}
+            </p>
+
+            <p>
+            🎯 <b>Confidence:</b>
             ${confidence}%
+            </p>
+
+            <p>
+            🍃 <b>Plant Health:</b>
+            Health analysis not available
             </p>
             `;
 
@@ -185,10 +204,12 @@ async function scanPlant() {
             ).innerHTML =
 
             `
-            <h2>❌ Not Identified</h2>
+            <h2 style="color:red;">
+            ❌ Plant Not Identified
+            </h2>
 
             <p>
-            Plant could not be identified.
+            Please try another leaf image.
             </p>
             `;
         }
@@ -203,16 +224,20 @@ async function scanPlant() {
         ).innerHTML =
 
         `
-        <h2>❌ Error</h2>
+        <h2 style="color:red;">
+        ❌ Error
+        </h2>
 
         <p>
         ${error}
         </p>
         `;
     }
+
 }
 
 </script>
 
 </body>
+
 </html>
