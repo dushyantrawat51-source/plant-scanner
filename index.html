@@ -140,6 +140,8 @@ async function scanPlant() {
 
             const plant =
                 data.results[0];
+            const scientificName =
+            plant.species.scientificNameWithoutAuthor;
 
             let plantName =
             plant.species
