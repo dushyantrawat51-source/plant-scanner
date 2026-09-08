@@ -4,7 +4,8 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>AI Plant Scanner</title>
 
@@ -37,7 +38,7 @@ button{
     padding: 12px 20px;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 button:hover{
@@ -85,7 +86,9 @@ capture="environment">
 <img id="preview">
 
 <div id="result">
+
 Waiting for image...
+
 </div>
 
 </div>
@@ -95,7 +98,9 @@ Waiting for image...
 async function scanPlant() {
 
     const fileInput =
-        document.getElementById("imageInput");
+        document.getElementById(
+            "imageInput"
+        );
 
     const file =
         fileInput.files[0];
@@ -109,9 +114,9 @@ async function scanPlant() {
         return;
     }
 
-    document.getElementById(
-        "preview"
-    ).src =
+    document
+    .getElementById("preview")
+    .src =
     URL.createObjectURL(file);
 
     const formData =
@@ -120,4 +125,159 @@ async function scanPlant() {
     formData.append(
         "image",
         file
-    )
+    );
+
+    try {
+
+        const response =
+        await fetch(
+            "https://plant-scanner-bup2.onrender.com/identify",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data =
+            await response.json();
+
+        console.log(data);
+
+        if(
+            data.results &&
+            data.results.length > 0
+        ){
+
+            const plant =
+                data.results[0];
+
+            const scientificName =
+                plant.species
+                .scientificNameWithoutAuthor;
+
+            let commonName =
+                "Not Available";
+
+            if(
+                plant.species.commonNames &&
+                plant.species.commonNames.length > 0
+            ){
+
+                commonName =
+                    plant.species.commonNames[0];
+            }
+
+            const confidence =
+                (
+                    plant.score * 100
+                ).toFixed(2);
+
+            const health =
+                data.health?.health ||
+                "Unknown";
+
+            const disease =
+                data.health?.disease ||
+                "Unknown";
+
+            const healthConfidence =
+                data.health?.confidence ||
+                "Unknown";
+
+            const suggestion =
+                data.health?.suggestion ||
+                "No suggestion available";
+
+            document
+            .getElementById("result")
+            .innerHTML =
+
+            `
+            <h2 style="color:green;">
+            ✅ Plant Identified
+            </h2>
+
+            <p>
+            🌱 <b>Common Name:</b>
+            ${commonName}
+            </p>
+
+            <p>
+            🔬 <b>Scientific Name:</b>
+            ${scientificName}
+            </p>
+
+            <p>
+            🎯 <b>Confidence:</b>
+            ${confidence}%
+            </p>
+
+            <hr>
+
+            <h3>
+            🍃 Health Analysis
+            </h3>
+
+            <p>
+            <b>Health:</b>
+            ${health}
+            </p>
+
+            <p>
+            <b>Disease:</b>
+            ${disease}
+            </p>
+
+            <p>
+            <b>Health Confidence:</b>
+            ${healthConfidence}
+            </p>
+
+            <p>
+            <b>Suggestion:</b>
+            ${suggestion}
+            </p>
+            `;
+
+        }
+
+        else{
+
+            document
+            .getElementById("result")
+            .innerHTML =
+
+            `
+            <h2 style="color:red;">
+            Plant Not Identified
+            </h2>
+            `;
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        document
+        .getElementById("result")
+        .innerHTML =
+
+        `
+        <h2 style="color:red;">
+        Error
+        </h2>
+
+        <p>
+        ${error}
+        </p>
+        `;
+    }
+
+}
+
+</script>
+
+</body>
+</html>
