@@ -22,8 +22,7 @@ def identify():
     image = request.files["image"]
 
     url = (
-        f"https://my-api.plantnet.org/"
-        f"v2/identify/all?api-key={API_KEY}"
+        f"https://my-api.plantnet.org/"f"v2/identify/all?api-key={API_KEY}"
     )
 
     files = {
