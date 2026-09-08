@@ -5,7 +5,7 @@ from health import check_health
 app = Flask(__name__)
 CORS(app)
 
-API_KEY = "2b10nkbz8latbwRlOULHyhvRO"
+API_KEY = "2b10LtosAzCdUQ9aBjklIkle"
 @app.route("/")
 def home():
     return "Plant Scanner Backend Running!"
