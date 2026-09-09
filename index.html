@@ -248,6 +248,28 @@ async function scanPlant(){
                 body:formData
             }
         );
+const response = await fetch(
+    "https://plant-scanner-bup2.onrender.com/identify",
+    {
+        method: "POST",
+        body: formData
+    }
+);
 
-        const data =
-  
+const response = await fetch(
+    "https://plant-scanner-bup2.onrender.com/identify",
+    {
+        method: "POST",
+        body: formData
+    }
+);
+
+const data = await response.json();
+
+result.innerHTML = `
+    <h3>🌿 Scan Result</h3>
+    <p><strong>Plant Name:</strong> ${data.plant_name || "Unknown"}</p>
+    <p><strong>Health Status:</strong> ${data.health || "Unknown"}</p>
+    <p><strong>Disease:</strong> ${data.disease || "None"}</p>
+    <p><strong>Remedy:</strong> ${data.remedy || "No remedy available"}</p>
+`;
