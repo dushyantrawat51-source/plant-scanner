@@ -56,11 +56,13 @@ def identify():
         confidence = round(best_match["score"] * 100, 2)
 
         return jsonify({
-            "plant_name": plant_name,
-            "scientific_name": scientific_name,
-            "confidence": confidence
-        })
-
+    "plant_name": plant_name,
+    "scientific_name": scientific_name,
+    "confidence": confidence,
+    "health": health_result["health"],
+    "disease": health_result["disease"],
+    "remedy": health_result["remedy"]
+})
     except Exception as e:
         return jsonify({
             "error": str(e)
