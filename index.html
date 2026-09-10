@@ -204,7 +204,7 @@ Save Trees Save Earth
 </div>
 
 <script>
-
+const result = document.getElementById("result");
 async function scanPlant(){
 
     const fileInput =
@@ -261,6 +261,7 @@ result.innerHTML = `
         console.error(err);
         document.getElementById("result").innerText = "An error occurred while scanning. Please try again.";
     }
+}
 </script>
 
 </body>
