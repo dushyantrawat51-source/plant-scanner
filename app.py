@@ -56,7 +56,6 @@ def identify():
         "remedy": health_result.get("suggestion", "No remedy available")
     })
 ``
-
     image = request.files["image"]
 
 url = f"https://my-api.plantnet.org/v2/identify/all?api-key={API_KEY}"
