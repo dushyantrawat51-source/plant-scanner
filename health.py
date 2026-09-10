@@ -2,29 +2,30 @@ import random
 
 def check_health(image_path):
 
-    results = [
+    disease = "No Disease Detected"
 
-        {
-            "health": "Healthy",
-            "disease": "None",
-            "confidence": 95,
-            "suggestion": "Plant appears healthy."
-        },
+    remedies = {
+        "No Disease Detected":
+        "Keep regular watering and nutrient management.",
 
-        {
-            "health": "Diseased",
-            "disease": "Leaf Spot",
-            "confidence": 91,
-            "suggestion": "Apply fungicide."
-        },
+        "Leaf Spot":
+        "Use copper fungicide and remove infected leaves.",
 
-        {
-            "health": "Diseased",
-            "disease": "Powdery Mildew",
-            "confidence": 89,
-            "suggestion": "Improve air circulation."
-        }
+        "Powdery Mildew":
+        "Improve ventilation and apply sulfur spray.",
 
-    ]
+        "Rust":
+        "Use fungicide and avoid overhead watering.",
+
+        "Blight":
+        "Remove affected leaves and apply recommended fungicide."
+    }
+
+    return {
+        "health": "Healthy",
+        "disease": disease,
+        "confidence": 95,
+        "remedy": remedies[disease]
+    }
 
     return random.choice(results)
