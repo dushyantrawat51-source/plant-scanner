@@ -249,20 +249,33 @@ async function scanPlant(){
         );
 
 const data = await response.json();
-alert(JSON.stringify(data));
-result.innerHTML =
-    "<pre>" +
-    JSON.stringify(data, null, 2) +
-    "</pre>";
 
-return;
-console.log("API Response:", data);
+console.log(data);
+
 result.innerHTML = `
-    <h3>🌿 Scan Result</h3>
-    <p><strong>Plant Name:</strong> ${data.plant_name || "Unknown"}</p>
-    <p><strong>Health Status:</strong> ${data.health || "Unknown"}</p>
-    <p><strong>Disease:</strong> ${data.disease || "None"}</p>
-    <p><strong>Remedy:</strong> ${data.remedy || "No remedy available"}</p>
+<h3>🌿 Scan Result</h3>
+
+<p><strong>Plant Detected:</strong>
+${data.plant_name || data.plant || data.name || "Not Available"}
+</p>
+
+<p><strong>Scientific Name:</strong>
+${data.scientific_name || data.scientificName || "Not Available"}
+</p>
+
+<p><strong>Health Status:</strong>
+${typeof data.health === "object"
+    ? (data.health.status || JSON.stringify(data.health))
+    : (data.health || "Unknown")}
+</p>
+
+<p><strong>Disease:</strong>
+${data.disease || "None Detected"}
+</p>
+
+<p><strong>Remedy:</strong>
+${data.remedy || "No remedy available"}
+</p>
 `;
 } catch (err) {
         console.error(err);
