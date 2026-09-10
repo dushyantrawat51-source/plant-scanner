@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
-from health import check_health
+
 app = Flask(__name__)
 CORS(app)
 
-API_KEY = "2b10LtosAzCdUQ9aBjklIkle"
+API_KEY = "2b10rk4sO14ZfS4OXo4lVgyJe"
+
 @app.route("/")
 def home():
     return "Plant Scanner Backend Running!"
@@ -23,67 +24,47 @@ def identify():
     files = {
         "images": (
             image.filename,
-            image.stream,
+            image.read(),
             image.mimetype
         )
     }
 
-    response = requests.post(url, files=files)
+    try:
 
-    plant_data = response.json()
+        response = requests.post(url, files=files)
+        data = response.json()
 
-    if len(plant_data.get("results", [])) > 0:
+        if len(data.get("results", [])) == 0:
+            return jsonify({
+                "plant_name": "Unknown",
+                "scientific_name": "Unknown",
+                "confidence": 0
+            })
 
-        best_match = plant_data["results"][0]
-
-        plant_name = best_match["species"]["commonNames"][0] if best_match["species"]["commonNames"] else "Unknown"
-
-        scientific_name = best_match["species"]["scientificNameWithoutAuthor"]
-
-    else:
+        best_match = data["results"][0]
 
         plant_name = "Unknown"
-        scientific_name = "Unknown"
 
-    health_result = check_health("leaf.jpg")
+        if best_match["species"].get("commonNames"):
+            plant_name = best_match["species"]["commonNames"][0]
 
-    return jsonify({
-        "plant_name": plant_name,
-        "scientific_name": scientific_name,
-        "health": health_result.get("health", "Unknown"),
-        "disease": health_result.get("disease", "Unknown"),
-        "confidence": health_result.get("confidence", 0),
-        "remedy": health_result.get("suggestion", "No remedy available")
-    })
-``
-    image = request.files["image"]
-
-url = f"https://my-api.plantnet.org/v2/identify/all?api-key={API_KEY}"
-
-    files = {
-        "images": (
-            image.filename,
-            image.stream,
-            image.mimetype
+        scientific_name = best_match["species"].get(
+            "scientificNameWithoutAuthor",
+            "Unknown"
         )
-    }
 
-    response = requests.post(
-        url,
-        files=files
-    )
+        confidence = round(best_match["score"] * 100, 2)
 
-    health_result = check_health("leaf.jpg")
-    return jsonify({
-        "results": response.json()["results"],
-            "health": health_result
-        }
-    )
+        return jsonify({
+            "plant_name": plant_name,
+            "scientific_name": scientific_name,
+            "confidence": confidence
+        })
 
+    except Exception as e:
+        return jsonify({
+            "error": str(e)
+        })
 
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=5001,
-        debug=True
-    )
+    app.run(host="0.0.0.0", port=5001)
