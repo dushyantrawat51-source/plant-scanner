@@ -258,3 +258,11 @@ result.innerHTML = `
     <p><strong>Disease:</strong> ${data.disease || "None"}</p>
     <p><strong>Remedy:</strong> ${data.remedy || "No remedy available"}</p>
 `;
+} catch (err) {
+        console.error(err);
+        document.getElementById("result").innerText = "An error occurred while scanning. Please try again.";
+    }
+</script>
+
+</body>
+</html>
