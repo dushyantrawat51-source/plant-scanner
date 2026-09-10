@@ -249,33 +249,17 @@ async function scanPlant(){
         );
 
 const data = await response.json();
-console.log(JSON.stringify(data, null, 2));
-console.log(data);
 
 result.innerHTML = `
 <h3>🌿 Scan Result</h3>
 
-<p><strong>Plant Detected:</strong>
-${data.plant_name || data.plant || data.name || "Not Available"}
-</p>
+<p><strong>Health Status:</strong> ${data.health}</p>
 
-<p><strong>Scientific Name:</strong>
-${data.scientific_name || data.scientificName || "Not Available"}
-</p>
+<p><strong>Disease:</strong> ${data.disease}</p>
 
-<p><strong>Health Status:</strong>
-${typeof data.health === "object"
-    ? (data.health.status || JSON.stringify(data.health))
-    : (data.health || "Unknown")}
-</p>
+<p><strong>Confidence:</strong> ${data.confidence}%</p>
 
-<p><strong>Disease:</strong>
-${data.disease || "None Detected"}
-</p>
-
-<p><strong>Remedy:</strong>
-${data.remedy || "No remedy available"}
-</p>
+<p><strong>Suggestion:</strong> ${data.suggestion}</p>
 `;
 } catch (err) {
         console.error(err);
