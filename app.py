@@ -12,18 +12,54 @@ def home():
 
 @app.route("/identify", methods=["POST"])
 def identify():
-    print("FILES:", request.files)
 
     if "image" not in request.files:
-        return jsonify({
-            "error": "No image uploaded"
-        })
+        return jsonify({"error": "No image uploaded"})
 
     image = request.files["image"]
 
-    url = (
-        f"https://my-api.plantnet.org/"f"v2/identify/all?api-key={API_KEY}"
-    )
+    url = f"https://my-api.plantnet.org/v2/identify/all?api-key={API_KEY}"
+
+    files = {
+        "images": (
+            image.filename,
+            image.stream,
+            image.mimetype
+        )
+    }
+
+    response = requests.post(url, files=files)
+
+    plant_data = response.json()
+
+    if len(plant_data.get("results", [])) > 0:
+
+        best_match = plant_data["results"][0]
+
+        plant_name = best_match["species"]["commonNames"][0] if best_match["species"]["commonNames"] else "Unknown"
+
+        scientific_name = best_match["species"]["scientificNameWithoutAuthor"]
+
+    else:
+
+        plant_name = "Unknown"
+        scientific_name = "Unknown"
+
+    health_result = check_health("leaf.jpg")
+
+    return jsonify({
+        "plant_name": plant_name,
+        "scientific_name": scientific_name,
+        "health": health_result.get("health", "Unknown"),
+        "disease": health_result.get("disease", "Unknown"),
+        "confidence": health_result.get("confidence", 0),
+        "remedy": health_result.get("suggestion", "No remedy available")
+    })
+``
+
+    image = request.files["image"]
+
+url = f"https://my-api.plantnet.org/v2/identify/all?api-key={API_KEY}"
 
     files = {
         "images": (
