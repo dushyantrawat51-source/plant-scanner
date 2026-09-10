@@ -250,20 +250,34 @@ async function scanPlant(){
 
 const data = await response.json();
 
+const plant = data.results?.[0];
+
 result.innerHTML = `
 <h3>🌿 Scan Result</h3>
 
-<p><strong>Plant Detected:</strong> ${data.plant_name}</p>
+<p><strong>Plant Detected:</strong>
+${plant?.species?.commonNames?.[0] || "Unknown"}
+</p>
 
-<p><strong>Scientific Name:</strong> ${data.scientific_name}</p>
+<p><strong>Scientific Name:</strong>
+${plant?.species?.scientificNameWithoutAuthor || "Unknown"}
+</p>
 
-<p><strong>Confidence:</strong> ${data.confidence}%</p>
+<p><strong>Health Status:</strong>
+${data.health?.health || "Unknown"}
+</p>
 
-<p><strong>Health Status:</strong> ${data.health}</p>
+<p><strong>Disease:</strong>
+${data.health?.disease || "None"}
+</p>
 
-<p><strong>Disease:</strong> ${data.disease}</p>
+<p><strong>Confidence:</strong>
+${data.health?.confidence || 0}%
+</p>
 
-<p><strong>Remedy:</strong> ${data.remedy}</p>
+<p><strong>Suggestion:</strong>
+${data.health?.suggestion || "No suggestion"}
+</p>
 `;
 } catch (err) {
         console.error(err);
