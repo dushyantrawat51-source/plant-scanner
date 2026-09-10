@@ -249,7 +249,7 @@ async function scanPlant(){
         );
 
 const data = await response.json();
-
+console.log("API Response:", data);
 result.innerHTML = `
     <h3>🌿 Scan Result</h3>
     <p><strong>Plant Name:</strong> ${data.plant_name || "Unknown"}</p>
