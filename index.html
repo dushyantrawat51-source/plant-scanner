@@ -249,6 +249,13 @@ async function scanPlant(){
         );
 
 const data = await response.json();
+
+result.innerHTML =
+    "<pre>" +
+    JSON.stringify(data, null, 2) +
+    "</pre>";
+
+return;
 console.log("API Response:", data);
 result.innerHTML = `
     <h3>🌿 Scan Result</h3>
