@@ -253,14 +253,19 @@ const data = await response.json();
 result.innerHTML = `
 <h3>🌿 Scan Result</h3>
 
+<p><strong>Plant Detected:</strong> ${data.plant_name}</p>
+
+<p><strong>Scientific Name:</strong> ${data.scientific_name}</p>
+
 <p><strong>Health Status:</strong> ${data.health}</p>
 
 <p><strong>Disease:</strong> ${data.disease}</p>
 
 <p><strong>Confidence:</strong> ${data.confidence}%</p>
 
-<p><strong>Suggestion:</strong> ${data.suggestion}</p>
+<p><strong>Remedy:</strong> ${data.remedy}</p>
 `;
+``
 } catch (err) {
         console.error(err);
         document.getElementById("result").innerText = "An error occurred while scanning. Please try again.";
